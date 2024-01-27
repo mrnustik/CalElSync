@@ -1,4 +1,9 @@
-﻿namespace CalElSync.Tasks.Todoist.Client
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CalElSync.Tasks.Todoist.Client;
+
+public class TodoistApiOptions
 {
-    public record TodoistApiOptions(string ApiKey);
+    [Required]
+    public string ApiKey { get; set; }
 }

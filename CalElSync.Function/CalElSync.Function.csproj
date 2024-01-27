@@ -23,4 +23,8 @@
     <ItemGroup>
         <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext"/>
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\CalElSync.Events.iCal\CalElSync.Events.iCal.csproj" />
+      <ProjectReference Include="..\CalElSync.Tasks.Todoist\CalElSync.Tasks.Todoist.csproj" />
+    </ItemGroup>
 </Project>
