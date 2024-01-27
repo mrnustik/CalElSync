@@ -26,6 +26,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\CalElSync.Events.iCal\CalElSync.Events.iCal.csproj" />
+      <ProjectReference Include="..\CalElSync.Tasks.Todoist\CalElSync.Tasks.Todoist.csproj" />
       <ProjectReference Include="..\CalElSync\CalElSync.csproj" />
     </ItemGroup>
 

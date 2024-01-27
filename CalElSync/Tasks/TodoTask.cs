@@ -1,5 +1,5 @@
 ﻿namespace CalElSync.Core.Tasks;
 
 public record TodoTask(
-    DateTime? DateTime,
+    DateTime DateTime,
     string Title);
