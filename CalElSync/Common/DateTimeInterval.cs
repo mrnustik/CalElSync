@@ -15,14 +15,6 @@ public record DateTimeInterval
         this.End = End;
     }
 
-    public DateTime Start { get; init; }
-    public DateTime End { get; init; }
-
-    public void Deconstruct(
-        out DateTime Start,
-        out DateTime End)
-    {
-        Start = this.Start;
-        End = this.End;
-    }
+    public DateTime Start { get; }
+    public DateTime End { get; }
 }
