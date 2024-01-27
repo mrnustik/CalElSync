@@ -9,6 +9,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalElSync.Events.iCal", "CalElSync.Events.iCal\CalElSync.Events.iCal.csproj", "{7FEECA72-4C58-4385-8E7C-6C78B353FFEA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7F2EB1EF-DC8B-4529-892F-58DF2083A226}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
