@@ -5,7 +5,6 @@
         <OutputType>Exe</OutputType>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <UserSecretsId>87b921f3-14fe-4446-ae1f-d78f3c182862</UserSecretsId>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.19.0"/>
