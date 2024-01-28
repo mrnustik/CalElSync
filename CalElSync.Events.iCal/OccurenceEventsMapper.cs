@@ -10,7 +10,7 @@ public static class OccurenceEventsMapper
     {
         var calendarEvent = (CalendarEvent)occurrence.Source;
         return new Event(
-            calendarEvent.Summary,
+            calendarEvent.Summary.Trim(),
             occurrence.Period.StartTime.Value.ToUniversalTime(),
             occurrence.Period.EndTime.Value.ToUniversalTime());
     }
