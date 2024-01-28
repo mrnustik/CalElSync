@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace CalElSync.Core.Configuration;
+﻿namespace CalElSync.Core.Configuration;
 
 public interface ICalendarMappingProvider
 {
