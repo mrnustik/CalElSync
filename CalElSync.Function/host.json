@@ -11,6 +11,7 @@
         "logLevel": {
             "default": "Information",
             "Host": "Warning",
+            "Host.Results": "Information",
             "Function": "Warning"
         }
     }
