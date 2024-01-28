@@ -37,7 +37,7 @@ public class RunSync
 
     [Function("RunSync_Weekly")]
     public async Task RunAsync(
-        [TimerTrigger("0 2 * * 1")] TimerInfo timerInfo,
+        [TimerTrigger("0 0 2 * * 1")] TimerInfo timerInfo,
         FunctionContext executionContext)
     {
         _logger.LogInformation($"Import function executed at: {DateTime.UtcNow}");
