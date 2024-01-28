@@ -1,6 +1,6 @@
 ﻿namespace CalElSync.Core.Configuration;
 
-public interface ICalendarMappingProvider
+public interface ICalendarProjectMappingProvider
 {
     Task<IReadOnlyCollection<CalendarProjectMapping>> GetCalendarMappingsAsync(CancellationToken ct);
 }

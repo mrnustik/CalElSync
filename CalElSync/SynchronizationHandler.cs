@@ -9,25 +9,25 @@ namespace CalElSync.Core;
 public class SynchronizationHandler : ISynchronizationHandler
 {
     private readonly IEventsImportService _eventsImportService;
-    private readonly ICalendarMappingProvider _calendarMappingProvider;
+    private readonly ICalendarProjectMappingProvider _calendarProjectMappingProvider;
     private readonly ITaskRepository _taskRepository;
     private readonly ILogger<SynchronizationHandler> _logger;
 
     public SynchronizationHandler(
         IEventsImportService eventsImportService,
-        ICalendarMappingProvider calendarMappingProvider,
+        ICalendarProjectMappingProvider calendarProjectMappingProvider,
         ITaskRepository taskRepository,
         ILogger<SynchronizationHandler> logger)
     {
         _eventsImportService = eventsImportService;
-        _calendarMappingProvider = calendarMappingProvider;
+        _calendarProjectMappingProvider = calendarProjectMappingProvider;
         _logger = logger;
         _taskRepository = taskRepository;
     }
 
     public async Task RunSynchronizationAsync(DateTimeInterval interval, CancellationToken ct)
     {
-        var calendarMappings = await _calendarMappingProvider.GetCalendarMappingsAsync(ct);
+        var calendarMappings = await _calendarProjectMappingProvider.GetCalendarMappingsAsync(ct);
         foreach (var calendarProjectMapping in calendarMappings)
         {
             try

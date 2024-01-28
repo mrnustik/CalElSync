@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalElSync.Tasks.Todoist", "CalElSync.Tasks.Todoist\CalElSync.Tasks.Todoist.csproj", "{3F417601-D0B9-4F63-B63F-8E137D0B5353}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalElSync.Configuration.Table", "CalElSync.Configuration.Table\CalElSync.Configuration.Table.csproj", "{898D7BAD-14C8-4751-8367-CF5346B7FFDE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{3F417601-D0B9-4F63-B63F-8E137D0B5353}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F417601-D0B9-4F63-B63F-8E137D0B5353}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F417601-D0B9-4F63-B63F-8E137D0B5353}.Release|Any CPU.Build.0 = Release|Any CPU
+		{898D7BAD-14C8-4751-8367-CF5346B7FFDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{898D7BAD-14C8-4751-8367-CF5346B7FFDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{898D7BAD-14C8-4751-8367-CF5346B7FFDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{898D7BAD-14C8-4751-8367-CF5346B7FFDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,5 +1,4 @@
-﻿using CalElSync.Core.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace CalElSync.Core.Extensions;
 
@@ -8,6 +7,5 @@ public static class ServiceCollectionExtensions
     public static void AddCalElSync(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddTransient<ISynchronizationHandler, SynchronizationHandler>();
-        serviceCollection.AddSingleton<ICalendarMappingProvider, HardCodedCalendarMappingProvider>();
     }
 }

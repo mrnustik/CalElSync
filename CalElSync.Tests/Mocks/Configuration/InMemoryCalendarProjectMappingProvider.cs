@@ -2,7 +2,7 @@
 
 namespace CalElSync.Tests.Mocks.Configuration;
 
-public class InMemoryCalendarMappingProvider : ICalendarMappingProvider
+public class InMemoryCalendarProjectMappingProvider : ICalendarProjectMappingProvider
 {
     private readonly ICollection<CalendarProjectMapping> _mappings = new List<CalendarProjectMapping>();
 

@@ -15,7 +15,7 @@ public class SynchronizationHandlerTests
     private const int DayHoursInterval = 24;
     private const string SampleCalendarUrl = "https://outlook.live.com/calendar.ics";
 
-    private readonly InMemoryCalendarMappingProvider _inMemoryCalendarMappingProvider = new();
+    private readonly InMemoryCalendarProjectMappingProvider _inMemoryCalendarProjectMappingProvider = new();
     private readonly InMemoryTaskRepository _inMemoryTaskRepository = new();
 
     private readonly DateTimeInterval _testingInterval = new DateTimeInterval(
@@ -42,7 +42,7 @@ public class SynchronizationHandlerTests
         // Arrange
         var projectId = "test-project-id";
         var calendarUrl = new Uri(SampleCalendarUrl);
-        _inMemoryCalendarMappingProvider.AddMapping(
+        _inMemoryCalendarProjectMappingProvider.AddMapping(
             new CalendarProjectMapping(calendarUrl, projectId));
         var synchronizationHandler = CreateSut();
 
@@ -65,7 +65,7 @@ public class SynchronizationHandlerTests
         // Arrange
         var projectId = "test-project-id";
         var calendarUrl = new Uri(SampleCalendarUrl);
-        _inMemoryCalendarMappingProvider.AddMapping(
+        _inMemoryCalendarProjectMappingProvider.AddMapping(
             new CalendarProjectMapping(calendarUrl, projectId));
         _inMemoryTaskRepository.AddTask(
             projectId,
@@ -93,7 +93,7 @@ public class SynchronizationHandlerTests
         // Arrange
         var projectId = "test-project-id";
         var calendarUrl = new Uri(SampleCalendarUrl);
-        _inMemoryCalendarMappingProvider.AddMapping(
+        _inMemoryCalendarProjectMappingProvider.AddMapping(
             new CalendarProjectMapping(calendarUrl, projectId));
         var existingTaskWithMatchingTitle = new TodoTask(
             _testingInterval.Start.AddHours(7),
@@ -125,7 +125,7 @@ public class SynchronizationHandlerTests
         return new SynchronizationHandler(
             new EventsImportService(
                 new InMemoryFileDownloader()),
-            _inMemoryCalendarMappingProvider,
+            _inMemoryCalendarProjectMappingProvider,
             _inMemoryTaskRepository,
             NullLogger<SynchronizationHandler>.Instance);
     }

@@ -1,3 +1,4 @@
+using CalElSync.Configuration.Table.Extensions;
 using CalElSync.Core.Extensions;
 using CalElSync.Events.iCal.Extensions;
 using CalElSync.Tasks.Todoist.Extensions;
@@ -10,6 +11,7 @@ var host = new HostBuilder()
         {
             services.AddCalElSync();
             services.AddTodoistTasksIntegration(context.Configuration.GetSection("Todoist"));
+            services.AddConfigurationTableStorageIntegration(context.Configuration.GetSection("ConfigurationStorage"));
             services.AddiCalImportIntegration();
         })
     .Build();
