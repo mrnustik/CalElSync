@@ -7,6 +7,11 @@
                 "excludedTypes": "Request"
             },
             "enableLiveMetricsFilters": true
+        },
+        "logLevel": {
+            "default": "Information",
+            "Host": "Warning",
+            "Function": "Warning"
         }
     }
 }
