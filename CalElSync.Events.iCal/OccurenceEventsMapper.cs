@@ -11,7 +11,7 @@ public static class OccurenceEventsMapper
         var calendarEvent = (CalendarEvent)occurrence.Source;
         return new Event(
             calendarEvent.Summary,
-            occurrence.Period.StartTime.Value,
-            occurrence.Period.EndTime.Value);
+            occurrence.Period.StartTime.Value.ToUniversalTime(),
+            occurrence.Period.EndTime.Value.ToUniversalTime());
     }
 }

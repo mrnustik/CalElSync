@@ -2,6 +2,6 @@
 
 public record TodoistTaskResponse(
     string ProjectId,
-    string Title,
+    string Content,
     TodoistDateResponse? Due
 );

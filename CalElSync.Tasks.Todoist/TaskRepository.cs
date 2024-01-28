@@ -17,8 +17,8 @@ public class TaskRepository : ITaskRepository
     {
         var tasks = await _todoistApiClient.GetTasksAsync(new TasksFilter(projectId), ct);
         return tasks
-            .Where(t => t.Due != null)
-            .Select(t => new TodoTask(t.Due.DateTime, t.Title))
+            .Where(t => t.Due?.Datetime != null)
+            .Select(t => new TodoTask(t.Due!.Datetime!.Value.ToUniversalTime(), t.Content))
             .ToList()
             .AsReadOnly();
     }
