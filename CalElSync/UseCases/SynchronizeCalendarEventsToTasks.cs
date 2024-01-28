@@ -4,20 +4,20 @@ using CalElSync.Core.Events;
 using CalElSync.Core.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace CalElSync.Core;
+namespace CalElSync.Core.UseCases;
 
-public class SynchronizationHandler : ISynchronizationHandler
+public class SynchronizeCalendarEventsToTasks : ISynchronizeCalendarEventsToTasks
 {
     private readonly IEventsImportService _eventsImportService;
     private readonly ICalendarProjectMappingProvider _calendarProjectMappingProvider;
     private readonly ITaskRepository _taskRepository;
-    private readonly ILogger<SynchronizationHandler> _logger;
+    private readonly ILogger<SynchronizeCalendarEventsToTasks> _logger;
 
-    public SynchronizationHandler(
+    public SynchronizeCalendarEventsToTasks(
         IEventsImportService eventsImportService,
         ICalendarProjectMappingProvider calendarProjectMappingProvider,
         ITaskRepository taskRepository,
-        ILogger<SynchronizationHandler> logger)
+        ILogger<SynchronizeCalendarEventsToTasks> logger)
     {
         _eventsImportService = eventsImportService;
         _calendarProjectMappingProvider = calendarProjectMappingProvider;

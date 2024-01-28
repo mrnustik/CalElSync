@@ -1,8 +1,8 @@
 ﻿using CalElSync.Core.Common;
 
-namespace CalElSync.Core;
+namespace CalElSync.Core.UseCases;
 
-public interface ISynchronizationHandler
+public interface ISynchronizeCalendarEventsToTasks
 {
     Task RunSynchronizationAsync(DateTimeInterval interval, CancellationToken ct);
 }

@@ -1,7 +1,7 @@
-﻿using CalElSync.Core;
-using CalElSync.Core.Common;
+﻿using CalElSync.Core.Common;
 using CalElSync.Core.Configuration;
 using CalElSync.Core.Tasks;
+using CalElSync.Core.UseCases;
 using CalElSync.Events.iCal;
 using CalElSync.Tests.Mocks.Configuration;
 using CalElSync.Tests.Mocks.Events;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CalElSync.Tests;
 
-public class SynchronizationHandlerTests
+public class SynchronizeCalendarEventsToTasksTests
 {
     private const int DayHoursInterval = 24;
     private const string SampleCalendarUrl = "https://outlook.live.com/calendar.ics";
@@ -120,13 +120,13 @@ public class SynchronizationHandlerTests
                     .Concat(new[] { existingTaskWithMatchingDate, existingTaskWithMatchingTitle }));
     }
 
-    private ISynchronizationHandler CreateSut()
+    private ISynchronizeCalendarEventsToTasks CreateSut()
     {
-        return new SynchronizationHandler(
+        return new SynchronizeCalendarEventsToTasks(
             new EventsImportService(
                 new InMemoryFileDownloader()),
             _inMemoryCalendarProjectMappingProvider,
             _inMemoryTaskRepository,
-            NullLogger<SynchronizationHandler>.Instance);
+            NullLogger<SynchronizeCalendarEventsToTasks>.Instance);
     }
 }

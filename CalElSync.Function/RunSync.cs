@@ -1,6 +1,6 @@
 ﻿using System.Net;
-using CalElSync.Core;
 using CalElSync.Core.Common;
+using CalElSync.Core.UseCases;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -9,12 +9,12 @@ namespace CalElSync.Function;
 
 public class RunSync
 {
-    private readonly ISynchronizationHandler _synchronizationHandler;
+    private readonly ISynchronizeCalendarEventsToTasks _synchronizeCalendarEventsToTasks;
     private readonly ILogger<RunSync> _logger;
 
-    public RunSync(ISynchronizationHandler synchronizationHandler, ILoggerFactory loggerFactory)
+    public RunSync(ISynchronizeCalendarEventsToTasks synchronizeCalendarEventsToTasks, ILoggerFactory loggerFactory)
     {
-        _synchronizationHandler = synchronizationHandler;
+        _synchronizeCalendarEventsToTasks = synchronizeCalendarEventsToTasks;
         _logger = loggerFactory.CreateLogger<RunSync>();
     }
 
@@ -24,7 +24,7 @@ public class RunSync
         HttpRequestData req,
         FunctionContext executionContext)
     {
-        await _synchronizationHandler.RunSynchronizationAsync(
+        await _synchronizeCalendarEventsToTasks.RunSynchronizationAsync(
             new DateTimeInterval(
                 DateTime.Today,
                 DateTime.Today.AddDays(7)),
@@ -41,7 +41,7 @@ public class RunSync
         FunctionContext executionContext)
     {
         _logger.LogInformation($"Import function executed at: {DateTime.UtcNow}");
-        await _synchronizationHandler.RunSynchronizationAsync(
+        await _synchronizeCalendarEventsToTasks.RunSynchronizationAsync(
             new DateTimeInterval(
                 DateTime.Today,
                 DateTime.Today.AddDays(7)),
