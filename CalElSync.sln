@@ -11,6 +11,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7F2EB1EF-DC8B-4529-892F-58DF2083A226}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		.github\workflows\build.yml = .github\workflows\build.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalElSync.Tasks.Todoist", "CalElSync.Tasks.Todoist\CalElSync.Tasks.Todoist.csproj", "{3F417601-D0B9-4F63-B63F-8E137D0B5353}"
