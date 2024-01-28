@@ -27,7 +27,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish
-      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/function
+      run: dotnet publish CalElSync.Function -c Release -o ${{env.DOTNET_ROOT}}/function
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
       with:
