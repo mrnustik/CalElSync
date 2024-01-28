@@ -57,15 +57,20 @@ public class SynchronizationHandler : ISynchronizationHandler
         var existingTasks = await _taskRepository.GetTasksAsync(calendarProjectMapping.ProjectId, ct);
         foreach (var calendarEvent in events)
         {
-            if (!existingTasks.Any(t =>
-                    t.Title == calendarEvent.Title &&
-                    t.DateTime == calendarEvent.StartTime))
+            if (!existingTasks.Any(
+                    t =>
+                        t.Title == calendarEvent.Title &&
+                        t.DateTime == calendarEvent.StartTime))
             {
                 var taskToCreate = new TodoTask(calendarEvent.StartTime, calendarEvent.Title);
                 await _taskRepository.CreateTaskAsync(
                     calendarProjectMapping.ProjectId,
                     taskToCreate,
                     ct);
+                _logger.LogInformation(
+                    "Created task {TaskTitle} in project {ProjectId}",
+                    calendarEvent.Title,
+                    calendarProjectMapping.ProjectId);
             }
         }
     }
