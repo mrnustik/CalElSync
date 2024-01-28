@@ -3,16 +3,19 @@ using CalElSync.Core;
 using CalElSync.Core.Common;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Logging;
 
 namespace CalElSync.Function;
 
 public class RunSync
 {
     private readonly ISynchronizationHandler _synchronizationHandler;
+    private readonly ILogger<RunSync> _logger;
 
-    public RunSync(ISynchronizationHandler synchronizationHandler)
+    public RunSync(ISynchronizationHandler synchronizationHandler, ILoggerFactory loggerFactory)
     {
         _synchronizationHandler = synchronizationHandler;
+        _logger = loggerFactory.CreateLogger<RunSync>();
     }
 
     [Function("RunSync_Http")]
@@ -30,5 +33,18 @@ public class RunSync
         response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
         await response.WriteStringAsync("OK!");
         return response;
+    }
+
+    [Function("RunSync_Weekly")]
+    public async Task RunAsync(
+        [TimerTrigger("0 2 * * 1")] TimerInfo timerInfo,
+        FunctionContext executionContext)
+    {
+        _logger.LogInformation($"Import function executed at: {DateTime.UtcNow}");
+        await _synchronizationHandler.RunSynchronizationAsync(
+            new DateTimeInterval(
+                DateTime.Today,
+                DateTime.Today.AddDays(7)),
+            executionContext.CancellationToken);
     }
 }
