@@ -27,7 +27,7 @@ public class TodoistApiClient : ITodoistApiClient
         var response = await _httpClient.SendAsync(request, ct);
         response.EnsureSuccessStatusCode();
         var stringResponse = await response.Content.ReadAsStringAsync(ct);
-        return JsonSerializer.Deserialize<TodoistTaskResponse[]>(stringResponse, _serializationOptions);
+        return JsonSerializer.Deserialize<TodoistTaskResponse[]>(stringResponse, _serializationOptions)!;
     }
 
     public async Task CreateTaskAsync(CreateTodoistTaskRequest creationRequest, CancellationToken ct)
