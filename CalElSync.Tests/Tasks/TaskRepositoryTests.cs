@@ -1,8 +1,6 @@
 ﻿using CalElSync.Core.Tasks;
-using CalElSync.Tasks.Todoist;
-using CalElSync.Tasks.Todoist.Client;
 using CalElSync.Tasks.Todoist.Extensions;
-using CalElSync.Tests.Mocks.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CalElSync.Tests.Tasks;
@@ -11,7 +9,7 @@ public class TaskRepositoryTests
 {
     public const string ApiKey = "REPLACE_WITH_REAL_KEY";
     public const string ProjectId = "123456789";
-    
+
     [Fact(Skip = "These tests rely on the Todoist API")]
     public async Task GetTasksForProject_WithExistingProject_ReturnsThem()
     {
@@ -41,10 +39,14 @@ public class TaskRepositoryTests
     private ITaskRepository CreateSut()
     {
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddTodoistTasksIntegration(new TodoistApiOptions
-        {
-            ApiKey = ApiKey
-        });
+        var configurationBuilder = new ConfigurationBuilder();
+        var configurationRoot = configurationBuilder.AddInMemoryCollection(
+                new[]
+                {
+                    new KeyValuePair<string, string?>("Todoist:ApiKey", ApiKey)
+                })
+            .Build();
+        serviceCollection.AddTodoistTasksIntegration(configurationRoot.GetRequiredSection("Todoist"));
         var serviceProvider = serviceCollection.BuildServiceProvider();
         return serviceProvider.GetRequiredService<ITaskRepository>();
     }

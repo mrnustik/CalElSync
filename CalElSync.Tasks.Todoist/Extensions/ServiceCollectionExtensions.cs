@@ -1,5 +1,6 @@
 ﻿using CalElSync.Core.Tasks;
 using CalElSync.Tasks.Todoist.Client;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CalElSync.Tasks.Todoist.Extensions;
@@ -8,7 +9,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddTodoistTasksIntegration(
         this IServiceCollection serviceCollection,
-        TodoistApiOptions options)
+        IConfigurationSection options)
     {
         serviceCollection.AddTransient<ITaskRepository, TaskRepository>();
         serviceCollection.AddTransient<ITodoistApiClient, TodoistApiClient>();
@@ -18,7 +19,9 @@ public static class ServiceCollectionExtensions
             .AddHttpMessageHandler<TodoistApiAuthorizationHandler>();
         serviceCollection.AddTransient<TodoistApiAuthorizationHandler>();
         serviceCollection.AddOptions<TodoistApiOptions>()
-            .Configure(apiOptions => apiOptions.ApiKey = options.ApiKey);
+            .Bind(options)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
         return serviceCollection;
     }
 }
