@@ -19,8 +19,8 @@ public class SynchronizationHandlerTests
     private readonly InMemoryTaskRepository _inMemoryTaskRepository = new();
 
     private readonly DateTimeInterval _testingInterval = new DateTimeInterval(
-        DateTime.Parse("2024-01-29"),
-        DateTime.Parse("2024-02-5"));
+        DateTime.Parse("2024-01-29").ToUniversalTime(),
+        DateTime.Parse("2024-02-5").ToUniversalTime());
 
     private IReadOnlyCollection<TodoTask> ExpectedTasks => new[]
     {
