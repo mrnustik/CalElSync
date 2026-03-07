@@ -33,19 +33,7 @@ public class WeeklySyncService : BackgroundService
             var delay = nextOccurrence - _timeProvider.GetUtcNow();
             _logger.LogInformation("Next sync scheduled in {Delay}", delay);
 
-            using var delayCts = new CancellationTokenSource(delay, _timeProvider);
-            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken, delayCts.Token);
-            try
-            {
-                await Task.Delay(Timeout.Infinite, linkedCts.Token);
-            }
-            catch (OperationCanceledException) when (!stoppingToken.IsCancellationRequested)
-            {
-                // Delay expired — proceed with sync
-            }
-
-            if (stoppingToken.IsCancellationRequested)
-                break;
+            await _timeProvider.Delay(delay, stoppingToken);
 
             _logger.LogInformation("Starting sync at {Time}", _timeProvider.GetUtcNow());
             try
