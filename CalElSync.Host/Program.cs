@@ -21,6 +21,7 @@ builder.Services.AddOptions<SyncScheduleOptions>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 builder.Services.AddiCalImportIntegration();
+builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddHostedService<WeeklySyncService>();
 
 var app = builder.Build();

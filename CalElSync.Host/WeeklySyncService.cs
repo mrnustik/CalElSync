@@ -11,15 +11,18 @@ public class WeeklySyncService : BackgroundService
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<WeeklySyncService> _logger;
     private readonly IOptions<SyncScheduleOptions> _scheduleOptions;
+    private readonly TimeProvider _timeProvider;
 
     public WeeklySyncService(
         IServiceScopeFactory scopeFactory,
         ILogger<WeeklySyncService> logger,
-        IOptions<SyncScheduleOptions> scheduleOptions)
+        IOptions<SyncScheduleOptions> scheduleOptions,
+        TimeProvider timeProvider)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
         _scheduleOptions = scheduleOptions;
+        _timeProvider = timeProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -33,7 +36,7 @@ public class WeeklySyncService : BackgroundService
             if (stoppingToken.IsCancellationRequested)
                 break;
 
-            _logger.LogInformation("Starting sync at {Time}", DateTime.UtcNow);
+            _logger.LogInformation("Starting sync at {Time}", _timeProvider.GetUtcNow());
             try
             {
                 using var scope = _scopeFactory.CreateScope();
@@ -49,11 +52,11 @@ public class WeeklySyncService : BackgroundService
         }
     }
 
-    private TimeSpan GetDelayUntilNextOccurrence()
+    internal TimeSpan GetDelayUntilNextOccurrence()
     {
         var cron = CronExpression.Parse(_scheduleOptions.Value.CronExpression);
-        var next = cron.GetNextOccurrence(DateTimeOffset.UtcNow, TimeZoneInfo.Utc)
+        var next = cron.GetNextOccurrence(_timeProvider.GetUtcNow(), TimeZoneInfo.Utc)
             ?? throw new InvalidOperationException("Cron expression has no future occurrences.");
-        return next - DateTimeOffset.UtcNow;
+        return next - _timeProvider.GetUtcNow();
     }
 }
