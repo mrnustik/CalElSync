@@ -6,6 +6,8 @@ using CalElSync.Events.iCal.Extensions;
 using CalElSync.Tasks.Todoist.Extensions;
 using CalElSync.Host;
 using CalElSync.Host.Configuration;
+using Hangfire;
+using Hangfire.InMemory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,9 +19,25 @@ builder.Services.AddOptions<JsonCalendarMappingOptions>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 builder.Services.AddiCalImportIntegration();
-builder.Services.AddHostedService<WeeklySyncService>();
+
+builder.Services.AddOptions<SyncScheduleOptions>()
+    .Bind(builder.Configuration.GetSection("Sync"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddTransient<SyncJobService>();
+
+builder.Services.AddHangfire(config => config
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseInMemoryStorage());
+builder.Services.AddHangfireServer();
 
 var app = builder.Build();
+
+var cron = app.Configuration.GetRequiredSection("Sync")["CronExpression"]!;
+app.Services.GetRequiredService<IRecurringJobManager>()
+    .AddOrUpdate<SyncJobService>("weekly-sync", job => job.RunAsync(), cron);
 
 app.MapPost("/sync", async (ISynchronizeCalendarEventsToTasks sync, CancellationToken ct) =>
 {
@@ -28,5 +46,7 @@ app.MapPost("/sync", async (ISynchronizeCalendarEventsToTasks sync, Cancellation
         ct);
     return Results.Ok("OK!");
 });
+
+app.MapHangfireDashboard("/hangfire");
 
 app.Run();

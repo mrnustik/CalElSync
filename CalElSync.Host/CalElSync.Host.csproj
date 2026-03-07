@@ -7,6 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.23" />
+        <PackageReference Include="Hangfire.InMemory" Version="1.0.0" />
         <ProjectReference Include="..\CalElSync.Events.iCal\CalElSync.Events.iCal.csproj"/>
         <ProjectReference Include="..\CalElSync.Tasks.Todoist\CalElSync.Tasks.Todoist.csproj"/>
     </ItemGroup>
