@@ -9,6 +9,8 @@
     <ItemGroup>
         <ProjectReference Include="..\CalElSync.Events.iCal\CalElSync.Events.iCal.csproj"/>
         <ProjectReference Include="..\CalElSync.Tasks.Todoist\CalElSync.Tasks.Todoist.csproj"/>
+        <PackageReference Include="Quartz" Version="3.16.1" />
+        <PackageReference Include="Quartz.AspNetCore" Version="3.16.1" />
     </ItemGroup>
 
 </Project>
