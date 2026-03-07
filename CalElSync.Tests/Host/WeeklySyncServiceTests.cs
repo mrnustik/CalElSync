@@ -19,41 +19,35 @@ public class WeeklySyncServiceTests
             timeProvider);
 
     [Fact]
-    public void GetDelayUntilNextOccurrence_WhenMondayBeforeScheduledTime_ReturnsRemainingTimeToday()
+    public void GetNextOccurrence_WhenMondayBeforeScheduledTime_ReturnsSameDayAtScheduledTime()
     {
-        // Monday 2024-01-29 at 01:00 UTC — 1 hour before the 02:00 schedule
+        // Monday 2024-01-29 at 01:00 UTC — before the 02:00 schedule
         var fakeTime = new FakeTimeProvider(new DateTimeOffset(2024, 1, 29, 1, 0, 0, TimeSpan.Zero));
 
-        var delay = CreateSut(fakeTime).GetDelayUntilNextOccurrence();
+        var next = CreateSut(fakeTime).GetNextOccurrence();
 
-        delay.Should().Be(TimeSpan.FromHours(1));
+        next.Should().Be(new DateTimeOffset(2024, 1, 29, 2, 0, 0, TimeSpan.Zero));
     }
 
     [Fact]
-    public void GetDelayUntilNextOccurrence_WhenMondayAfterScheduledTime_SkipsToNextWeek()
+    public void GetNextOccurrence_WhenMondayAfterScheduledTime_ReturnsNextMonday()
     {
-        // Monday 2024-01-29 at 03:00 UTC — 1 hour past the 02:00 schedule
+        // Monday 2024-01-29 at 03:00 UTC — past the 02:00 schedule
         var fakeTime = new FakeTimeProvider(new DateTimeOffset(2024, 1, 29, 3, 0, 0, TimeSpan.Zero));
 
-        var delay = CreateSut(fakeTime).GetDelayUntilNextOccurrence();
+        var next = CreateSut(fakeTime).GetNextOccurrence();
 
-        // Next occurrence: Monday 2024-02-05 at 02:00 UTC
-        var expected = new DateTimeOffset(2024, 2, 5, 2, 0, 0, TimeSpan.Zero)
-                       - new DateTimeOffset(2024, 1, 29, 3, 0, 0, TimeSpan.Zero);
-        delay.Should().Be(expected);
+        next.Should().Be(new DateTimeOffset(2024, 2, 5, 2, 0, 0, TimeSpan.Zero));
     }
 
     [Fact]
-    public void GetDelayUntilNextOccurrence_WhenMidWeek_ReturnsDelayUntilNextMonday()
+    public void GetNextOccurrence_WhenMidWeek_ReturnsNextMonday()
     {
         // Wednesday 2024-01-31 at 12:00 UTC
         var fakeTime = new FakeTimeProvider(new DateTimeOffset(2024, 1, 31, 12, 0, 0, TimeSpan.Zero));
 
-        var delay = CreateSut(fakeTime).GetDelayUntilNextOccurrence();
+        var next = CreateSut(fakeTime).GetNextOccurrence();
 
-        // Next occurrence: Monday 2024-02-05 at 02:00 UTC
-        var expected = new DateTimeOffset(2024, 2, 5, 2, 0, 0, TimeSpan.Zero)
-                       - new DateTimeOffset(2024, 1, 31, 12, 0, 0, TimeSpan.Zero);
-        delay.Should().Be(expected);
+        next.Should().Be(new DateTimeOffset(2024, 2, 5, 2, 0, 0, TimeSpan.Zero));
     }
 }

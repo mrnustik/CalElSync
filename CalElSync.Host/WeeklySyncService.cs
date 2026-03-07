@@ -29,9 +29,20 @@ public class WeeklySyncService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var delay = GetDelayUntilNextOccurrence();
+            var nextOccurrence = GetNextOccurrence();
+            var delay = nextOccurrence - _timeProvider.GetUtcNow();
             _logger.LogInformation("Next sync scheduled in {Delay}", delay);
-            await Task.Delay(delay, stoppingToken);
+
+            using var delayCts = new CancellationTokenSource(delay, _timeProvider);
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken, delayCts.Token);
+            try
+            {
+                await Task.Delay(Timeout.Infinite, linkedCts.Token);
+            }
+            catch (OperationCanceledException) when (!stoppingToken.IsCancellationRequested)
+            {
+                // Delay expired — proceed with sync
+            }
 
             if (stoppingToken.IsCancellationRequested)
                 break;
@@ -41,8 +52,9 @@ public class WeeklySyncService : BackgroundService
             {
                 using var scope = _scopeFactory.CreateScope();
                 var sync = scope.ServiceProvider.GetRequiredService<ISynchronizeCalendarEventsToTasks>();
+                var start = nextOccurrence.UtcDateTime.Date;
                 await sync.RunSynchronizationAsync(
-                    new DateTimeInterval(DateTime.Today, DateTime.Today.AddDays(7)),
+                    new DateTimeInterval(start, start.AddDays(7)),
                     stoppingToken);
             }
             catch (Exception ex)
@@ -52,11 +64,10 @@ public class WeeklySyncService : BackgroundService
         }
     }
 
-    internal TimeSpan GetDelayUntilNextOccurrence()
+    internal DateTimeOffset GetNextOccurrence()
     {
         var cron = CronExpression.Parse(_scheduleOptions.Value.CronExpression);
-        var next = cron.GetNextOccurrence(_timeProvider.GetUtcNow(), TimeZoneInfo.Utc)
+        return cron.GetNextOccurrence(_timeProvider.GetUtcNow(), TimeZoneInfo.Utc)
             ?? throw new InvalidOperationException("Cron expression has no future occurrences.");
-        return next - _timeProvider.GetUtcNow();
     }
 }
