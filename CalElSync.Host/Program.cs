@@ -1,16 +1,21 @@
-using CalElSync.Configuration.Table.Extensions;
 using CalElSync.Core.Common;
+using CalElSync.Core.Configuration;
 using CalElSync.Core.Extensions;
 using CalElSync.Core.UseCases;
 using CalElSync.Events.iCal.Extensions;
 using CalElSync.Tasks.Todoist.Extensions;
 using CalElSync.Host;
+using CalElSync.Host.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCalElSync();
 builder.Services.AddTodoistTasksIntegration(builder.Configuration.GetSection("Todoist"));
-builder.Services.AddConfigurationTableStorageIntegration(builder.Configuration.GetSection("ConfigurationStorage"));
+builder.Services.AddTransient<ICalendarProjectMappingProvider, JsonCalendarProjectMappingProvider>();
+builder.Services.AddOptions<JsonCalendarMappingOptions>()
+    .Bind(builder.Configuration.GetSection("CalendarsFile"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 builder.Services.AddiCalImportIntegration();
 builder.Services.AddHostedService<WeeklySyncService>();
 
