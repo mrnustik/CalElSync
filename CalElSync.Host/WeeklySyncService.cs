@@ -1,5 +1,8 @@
 using CalElSync.Core.Common;
 using CalElSync.Core.UseCases;
+using CalElSync.Host.Configuration;
+using Cronos;
+using Microsoft.Extensions.Options;
 
 namespace CalElSync.Host;
 
@@ -7,25 +10,30 @@ public class WeeklySyncService : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<WeeklySyncService> _logger;
+    private readonly IOptions<SyncScheduleOptions> _scheduleOptions;
 
-    public WeeklySyncService(IServiceScopeFactory scopeFactory, ILogger<WeeklySyncService> logger)
+    public WeeklySyncService(
+        IServiceScopeFactory scopeFactory,
+        ILogger<WeeklySyncService> logger,
+        IOptions<SyncScheduleOptions> scheduleOptions)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
+        _scheduleOptions = scheduleOptions;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var delay = GetDelayUntilNextMonday0200Utc();
+            var delay = GetDelayUntilNextOccurrence();
             _logger.LogInformation("Next sync scheduled in {Delay}", delay);
             await Task.Delay(delay, stoppingToken);
 
             if (stoppingToken.IsCancellationRequested)
                 break;
 
-            _logger.LogInformation("Starting weekly sync at {Time}", DateTime.UtcNow);
+            _logger.LogInformation("Starting sync at {Time}", DateTime.UtcNow);
             try
             {
                 using var scope = _scopeFactory.CreateScope();
@@ -36,18 +44,16 @@ public class WeeklySyncService : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred during the weekly sync");
+                _logger.LogError(ex, "An error occurred during sync");
             }
         }
     }
 
-    private static TimeSpan GetDelayUntilNextMonday0200Utc()
+    private TimeSpan GetDelayUntilNextOccurrence()
     {
-        var now = DateTime.UtcNow;
-        var daysUntilMonday = ((int)DayOfWeek.Monday - (int)now.DayOfWeek + 7) % 7;
-        if (daysUntilMonday == 0 && now.TimeOfDay >= TimeSpan.FromHours(2))
-            daysUntilMonday = 7;
-        var nextRun = now.Date.AddDays(daysUntilMonday).AddHours(2);
-        return nextRun - now;
+        var cron = CronExpression.Parse(_scheduleOptions.Value.CronExpression);
+        var next = cron.GetNextOccurrence(DateTimeOffset.UtcNow, TimeZoneInfo.Utc)
+            ?? throw new InvalidOperationException("Cron expression has no future occurrences.");
+        return next - DateTimeOffset.UtcNow;
     }
 }

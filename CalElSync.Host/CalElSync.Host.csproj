@@ -7,8 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CalElSync.Events.iCal\CalElSync.Events.iCal.csproj"/>
-        <ProjectReference Include="..\CalElSync.Tasks.Todoist\CalElSync.Tasks.Todoist.csproj"/>
+        <PackageReference Include="Cronos">
+          <Version>0.11.1</Version>
+        </PackageReference>
+        <ProjectReference Include="..\CalElSync.Events.iCal\CalElSync.Events.iCal.csproj" />
+        <ProjectReference Include="..\CalElSync.Tasks.Todoist\CalElSync.Tasks.Todoist.csproj" />
     </ItemGroup>
 
 </Project>
