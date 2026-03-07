@@ -17,7 +17,8 @@ public class SynchronizeCalendarEventsToTasks : ISynchronizeCalendarEventsToTask
         IEventsImportService eventsImportService,
         ICalendarProjectMappingProvider calendarProjectMappingProvider,
         ITaskRepository taskRepository,
-        ILogger<SynchronizeCalendarEventsToTasks> logger)
+        ILogger<SynchronizeCalendarEventsToTasks> logger
+    )
     {
         _eventsImportService = eventsImportService;
         _calendarProjectMappingProvider = calendarProjectMappingProvider;
@@ -40,7 +41,8 @@ public class SynchronizeCalendarEventsToTasks : ISynchronizeCalendarEventsToTask
                     exception,
                     "An unhandled exception occured when trying to map calendar {CalendarUrl} to project {ProjectId}",
                     calendarProjectMapping.CalendarUrl,
-                    calendarProjectMapping.ProjectId);
+                    calendarProjectMapping.ProjectId
+                );
             }
         }
     }
@@ -48,29 +50,37 @@ public class SynchronizeCalendarEventsToTasks : ISynchronizeCalendarEventsToTask
     private async Task RunSynchronizationForMappingAsync(
         CalendarProjectMapping calendarProjectMapping,
         DateTimeInterval interval,
-        CancellationToken ct)
+        CancellationToken ct
+    )
     {
         var events = await _eventsImportService.GetEventsFromCalendarAsync(
             calendarProjectMapping.CalendarUrl,
             interval,
-            ct);
-        var existingTasks = await _taskRepository.GetTasksAsync(calendarProjectMapping.ProjectId, ct);
+            ct
+        );
+        var existingTasks = await _taskRepository.GetTasksAsync(
+            calendarProjectMapping.ProjectId,
+            ct
+        );
         foreach (var calendarEvent in events)
         {
-            if (!existingTasks.Any(
-                    t =>
-                        t.Title == calendarEvent.Title &&
-                        t.DateTime == calendarEvent.StartTime))
+            if (
+                !existingTasks.Any(t =>
+                    t.Title == calendarEvent.Title && t.DateTime == calendarEvent.StartTime
+                )
+            )
             {
                 var taskToCreate = new TodoTask(calendarEvent.StartTime, calendarEvent.Title);
                 await _taskRepository.CreateTaskAsync(
                     calendarProjectMapping.ProjectId,
                     taskToCreate,
-                    ct);
+                    ct
+                );
                 _logger.LogInformation(
                     "Created task {TaskTitle} in project {ProjectId}",
                     calendarEvent.Title,
-                    calendarProjectMapping.ProjectId);
+                    calendarProjectMapping.ProjectId
+                );
             }
         }
     }

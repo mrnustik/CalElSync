@@ -5,6 +5,9 @@ namespace CalElSync.Tasks.Todoist.Client;
 
 public interface ITodoistApiClient
 {
-    Task<IReadOnlyCollection<TodoistTaskResponse>> GetTasksAsync(TasksFilter filter, CancellationToken ct);
+    Task<IReadOnlyCollection<TodoistTaskResponse>> GetTasksAsync(
+        TasksFilter filter,
+        CancellationToken ct
+    );
     Task CreateTaskAsync(CreateTodoistTaskRequest creationRequest, CancellationToken ct);
 }

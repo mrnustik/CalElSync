@@ -1,4 +1,3 @@
 ﻿namespace CalElSync.Tasks.Todoist.Client.Responses;
 
-public record TodoistDateResponse(
-    DateTime? Datetime);
+public record TodoistDateResponse(DateTime? Datetime);

@@ -2,5 +2,7 @@
 
 public interface ICalendarProjectMappingProvider
 {
-    Task<IReadOnlyCollection<CalendarProjectMapping>> GetCalendarMappingsAsync(CancellationToken ct);
+    Task<IReadOnlyCollection<CalendarProjectMapping>> GetCalendarMappingsAsync(
+        CancellationToken ct
+    );
 }

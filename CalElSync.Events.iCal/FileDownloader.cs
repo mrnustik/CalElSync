@@ -2,10 +2,7 @@
 
 namespace CalElSync.Events.iCal;
 
-public class FileDownloader(
-    ILogger<FileDownloader> logger,
-    HttpClient httpClient)
-    : IFileDownloader
+public class FileDownloader(ILogger<FileDownloader> logger, HttpClient httpClient) : IFileDownloader
 {
     public async Task<Stream> DownloadFileAsync(Uri fileUrl, CancellationToken ct)
     {
@@ -18,7 +15,11 @@ public class FileDownloader(
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "An error occured while downloading file from {FileUrl}", fileUrl);
+            logger.LogError(
+                exception,
+                "An error occured while downloading file from {FileUrl}",
+                fileUrl
+            );
             throw;
         }
     }

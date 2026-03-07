@@ -13,7 +13,10 @@ public class TaskRepository : ITaskRepository
         _todoistApiClient = todoistApiClient;
     }
 
-    public async Task<IReadOnlyCollection<TodoTask>> GetTasksAsync(string projectId, CancellationToken ct)
+    public async Task<IReadOnlyCollection<TodoTask>> GetTasksAsync(
+        string projectId,
+        CancellationToken ct
+    )
     {
         var tasks = await _todoistApiClient.GetTasksAsync(new TasksFilter(projectId), ct);
         return tasks
@@ -28,7 +31,8 @@ public class TaskRepository : ITaskRepository
         var request = new CreateTodoistTaskRequest(
             task.Title,
             projectId,
-            task.DateTime.ToUniversalTime());
+            task.DateTime.ToUniversalTime()
+        );
         return _todoistApiClient.CreateTaskAsync(request, ct);
     }
 }

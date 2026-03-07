@@ -6,6 +6,7 @@ public interface IEventsImportService
 {
     Task<IReadOnlyCollection<Event>> GetEventsFromCalendarAsync(
         Uri calendarUrl,
-        DateTimeInterval dateTimeInterval, 
-        CancellationToken ct);
+        DateTimeInterval dateTimeInterval,
+        CancellationToken ct
+    );
 }

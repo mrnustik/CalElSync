@@ -8,16 +8,24 @@ public class TableStorageCalendarProjectMappingProvider : ICalendarProjectMappin
 {
     private readonly IOptions<ConfigurationTableStorageOptions> _options;
 
-    public TableStorageCalendarProjectMappingProvider(IOptions<ConfigurationTableStorageOptions> options)
+    public TableStorageCalendarProjectMappingProvider(
+        IOptions<ConfigurationTableStorageOptions> options
+    )
     {
         _options = options;
     }
 
-    public async Task<IReadOnlyCollection<CalendarProjectMapping>> GetCalendarMappingsAsync(CancellationToken ct)
+    public async Task<IReadOnlyCollection<CalendarProjectMapping>> GetCalendarMappingsAsync(
+        CancellationToken ct
+    )
     {
         var tableClient = await CreateTableClientAsync(ct);
         var result = new List<CalendarProjectMapping>();
-        await foreach (var entity in tableClient.QueryAsync<CalendarProjectMappingEntity>(cancellationToken: ct))
+        await foreach (
+            var entity in tableClient.QueryAsync<CalendarProjectMappingEntity>(
+                cancellationToken: ct
+            )
+        )
         {
             result.Add(new CalendarProjectMapping(new Uri(entity.CalendarUrl), entity.ProjectId));
         }
@@ -29,7 +37,8 @@ public class TableStorageCalendarProjectMappingProvider : ICalendarProjectMappin
     {
         var tableClient = new TableClient(
             _options.Value.ConnectionString,
-            _options.Value.TableName);
+            _options.Value.TableName
+        );
         await tableClient.CreateIfNotExistsAsync(ct);
         return tableClient;
     }

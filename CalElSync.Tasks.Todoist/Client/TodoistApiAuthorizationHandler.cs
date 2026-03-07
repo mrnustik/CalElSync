@@ -12,9 +12,15 @@ public class TodoistApiAuthorizationHandler : DelegatingHandler
         _options = options;
     }
 
-    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    protected override Task<HttpResponseMessage> SendAsync(
+        HttpRequestMessage request,
+        CancellationToken cancellationToken
+    )
     {
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.Value.ApiKey);
+        request.Headers.Authorization = new AuthenticationHeaderValue(
+            "Bearer",
+            _options.Value.ApiKey
+        );
         return base.SendAsync(request, cancellationToken);
     }
 }

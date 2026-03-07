@@ -17,23 +17,35 @@ public class JsonCalendarProjectMappingProviderTests
         var filePath = Path.GetTempFileName();
         try
         {
-            await File.WriteAllTextAsync(filePath, """
+            await File.WriteAllTextAsync(
+                filePath,
+                """
                 [
                   { "calendarUrl": "https://example.com/calendar.ics", "projectId": "12345" },
                   { "calendarUrl": "https://other.com/events.ics", "projectId": "67890" }
                 ]
-                """, TestContext.Current.CancellationToken);
+                """,
+                TestContext.Current.CancellationToken
+            );
 
             var provider = CreateProvider(filePath);
-            var mappings = await provider.GetCalendarMappingsAsync(TestContext.Current.CancellationToken);
+            var mappings = await provider.GetCalendarMappingsAsync(
+                TestContext.Current.CancellationToken
+            );
 
             mappings.Should().HaveCount(2);
-            mappings.Should().ContainSingle(m =>
-                m.CalendarUrl == new Uri("https://example.com/calendar.ics") &&
-                m.ProjectId == "12345");
-            mappings.Should().ContainSingle(m =>
-                m.CalendarUrl == new Uri("https://other.com/events.ics") &&
-                m.ProjectId == "67890");
+            mappings
+                .Should()
+                .ContainSingle(m =>
+                    m.CalendarUrl == new Uri("https://example.com/calendar.ics")
+                    && m.ProjectId == "12345"
+                );
+            mappings
+                .Should()
+                .ContainSingle(m =>
+                    m.CalendarUrl == new Uri("https://other.com/events.ics")
+                    && m.ProjectId == "67890"
+                );
         }
         finally
         {
@@ -50,7 +62,9 @@ public class JsonCalendarProjectMappingProviderTests
             await File.WriteAllTextAsync(filePath, "[]", TestContext.Current.CancellationToken);
 
             var provider = CreateProvider(filePath);
-            var mappings = await provider.GetCalendarMappingsAsync(TestContext.Current.CancellationToken);
+            var mappings = await provider.GetCalendarMappingsAsync(
+                TestContext.Current.CancellationToken
+            );
 
             mappings.Should().BeEmpty();
         }
@@ -68,6 +82,7 @@ public class JsonCalendarProjectMappingProviderTests
 
         await provider
             .Invoking(p => p.GetCalendarMappingsAsync(TestContext.Current.CancellationToken))
-            .Should().ThrowAsync<FileNotFoundException>();
+            .Should()
+            .ThrowAsync<FileNotFoundException>();
     }
 }

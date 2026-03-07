@@ -17,7 +17,8 @@ public class WeeklySyncService : BackgroundService
         IServiceScopeFactory scopeFactory,
         ILogger<WeeklySyncService> logger,
         IOptions<SyncScheduleOptions> scheduleOptions,
-        TimeProvider timeProvider)
+        TimeProvider timeProvider
+    )
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
@@ -39,11 +40,13 @@ public class WeeklySyncService : BackgroundService
             try
             {
                 using var scope = _scopeFactory.CreateScope();
-                var sync = scope.ServiceProvider.GetRequiredService<ISynchronizeCalendarEventsToTasks>();
+                var sync =
+                    scope.ServiceProvider.GetRequiredService<ISynchronizeCalendarEventsToTasks>();
                 var start = nextOccurrence.UtcDateTime.Date;
                 await sync.RunSynchronizationAsync(
                     new DateTimeInterval(start, start.AddDays(7)),
-                    stoppingToken);
+                    stoppingToken
+                );
             }
             catch (Exception ex)
             {

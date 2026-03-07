@@ -7,6 +7,9 @@ public static class ServiceCollectionExtensions
 {
     public static void AddCalElSync(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddTransient<ISynchronizeCalendarEventsToTasks, SynchronizeCalendarEventsToTasks>();
+        serviceCollection.AddTransient<
+            ISynchronizeCalendarEventsToTasks,
+            SynchronizeCalendarEventsToTasks
+        >();
     }
 }

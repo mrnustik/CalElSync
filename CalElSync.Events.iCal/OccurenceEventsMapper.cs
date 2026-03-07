@@ -12,6 +12,7 @@ public static class OccurenceEventsMapper
         return new Event(
             calendarEvent.Summary.Trim(),
             occurrence.Period.StartTime.Value.ToUniversalTime(),
-            occurrence.Period.EndTime.Value.ToUniversalTime());
+            occurrence.Period.EndTime.Value.ToUniversalTime()
+        );
     }
 }

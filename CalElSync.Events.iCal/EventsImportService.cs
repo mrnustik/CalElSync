@@ -9,13 +9,12 @@ public class EventsImportService(IFileDownloader fileDownloader) : IEventsImport
     public async Task<IReadOnlyCollection<Event>> GetEventsFromCalendarAsync(
         Uri calendarUrl,
         DateTimeInterval dateTimeInterval,
-        CancellationToken ct)
+        CancellationToken ct
+    )
     {
         await using var iCalStream = await fileDownloader.DownloadFileAsync(calendarUrl, ct);
         var calendar = Calendar.Load(iCalStream);
         var occurrences = calendar.GetOccurrences(dateTimeInterval.Start, dateTimeInterval.End);
-        return occurrences
-            .Select(OccurenceEventsMapper.MapToEvent)
-            .ToArray();
+        return occurrences.Select(OccurenceEventsMapper.MapToEvent).ToArray();
     }
 }

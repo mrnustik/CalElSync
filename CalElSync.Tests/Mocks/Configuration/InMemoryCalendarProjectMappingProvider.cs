@@ -4,13 +4,14 @@ namespace CalElSync.Tests.Mocks.Configuration;
 
 public class InMemoryCalendarProjectMappingProvider : ICalendarProjectMappingProvider
 {
-    private readonly ICollection<CalendarProjectMapping> _mappings = new List<CalendarProjectMapping>();
+    private readonly ICollection<CalendarProjectMapping> _mappings =
+        new List<CalendarProjectMapping>();
 
-    public Task<IReadOnlyCollection<CalendarProjectMapping>> GetCalendarMappingsAsync(CancellationToken ct)
+    public Task<IReadOnlyCollection<CalendarProjectMapping>> GetCalendarMappingsAsync(
+        CancellationToken ct
+    )
     {
-        var result = _mappings
-            .ToArray()
-            .AsReadOnly();
+        var result = _mappings.ToArray().AsReadOnly();
         return Task.FromResult<IReadOnlyCollection<CalendarProjectMapping>>(result);
     }
 

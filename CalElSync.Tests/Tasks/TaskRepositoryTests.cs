@@ -33,20 +33,22 @@ public class TaskRepositoryTests
         await taskRepository.CreateTaskAsync(
             ProjectId,
             new TodoTask(DateTime.Now, "Test"),
-            CancellationToken.None);
+            CancellationToken.None
+        );
     }
 
     private ITaskRepository CreateSut()
     {
         var serviceCollection = new ServiceCollection();
         var configurationBuilder = new ConfigurationBuilder();
-        var configurationRoot = configurationBuilder.AddInMemoryCollection(
-                new[]
-                {
-                    new KeyValuePair<string, string?>("Todoist:ApiKey", ApiKey)
-                })
+        var configurationRoot = configurationBuilder
+            .AddInMemoryCollection(
+                new[] { new KeyValuePair<string, string?>("Todoist:ApiKey", ApiKey) }
+            )
             .Build();
-        serviceCollection.AddTodoistTasksIntegration(configurationRoot.GetRequiredSection("Todoist"));
+        serviceCollection.AddTodoistTasksIntegration(
+            configurationRoot.GetRequiredSection("Todoist")
+        );
         var serviceProvider = serviceCollection.BuildServiceProvider();
         return serviceProvider.GetRequiredService<ITaskRepository>();
     }

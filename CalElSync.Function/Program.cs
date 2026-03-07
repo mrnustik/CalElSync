@@ -11,9 +11,12 @@ var host = new HostBuilder()
         {
             services.AddCalElSync();
             services.AddTodoistTasksIntegration(context.Configuration.GetSection("Todoist"));
-            services.AddConfigurationTableStorageIntegration(context.Configuration.GetSection("ConfigurationStorage"));
+            services.AddConfigurationTableStorageIntegration(
+                context.Configuration.GetSection("ConfigurationStorage")
+            );
             services.AddiCalImportIntegration();
-        })
+        }
+    )
     .Build();
 
 host.Run();

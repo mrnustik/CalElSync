@@ -8,10 +8,15 @@ public static class ServiceCollectionExtensions
 {
     public static void AddConfigurationTableStorageIntegration(
         this IServiceCollection serviceCollection,
-        IConfigurationSection tableStorageConfiguration)
+        IConfigurationSection tableStorageConfiguration
+    )
     {
-        serviceCollection.AddTransient<ICalendarProjectMappingProvider, TableStorageCalendarProjectMappingProvider>();
-        serviceCollection.AddOptions<ConfigurationTableStorageOptions>()
+        serviceCollection.AddTransient<
+            ICalendarProjectMappingProvider,
+            TableStorageCalendarProjectMappingProvider
+        >();
+        serviceCollection
+            .AddOptions<ConfigurationTableStorageOptions>()
             .Bind(tableStorageConfiguration)
             .ValidateDataAnnotations()
             .ValidateOnStart();
