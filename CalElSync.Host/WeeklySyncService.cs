@@ -1,5 +1,8 @@
 using CalElSync.Core.Common;
 using CalElSync.Core.UseCases;
+using CalElSync.Host.Configuration;
+using Cronos;
+using Microsoft.Extensions.Options;
 
 namespace CalElSync.Host;
 
@@ -7,47 +10,52 @@ public class WeeklySyncService : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<WeeklySyncService> _logger;
+    private readonly IOptions<SyncScheduleOptions> _scheduleOptions;
+    private readonly TimeProvider _timeProvider;
 
-    public WeeklySyncService(IServiceScopeFactory scopeFactory, ILogger<WeeklySyncService> logger)
+    public WeeklySyncService(
+        IServiceScopeFactory scopeFactory,
+        ILogger<WeeklySyncService> logger,
+        IOptions<SyncScheduleOptions> scheduleOptions,
+        TimeProvider timeProvider)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
+        _scheduleOptions = scheduleOptions;
+        _timeProvider = timeProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var delay = GetDelayUntilNextMonday0200Utc();
+            var nextOccurrence = GetNextOccurrence();
+            var delay = nextOccurrence - _timeProvider.GetUtcNow();
             _logger.LogInformation("Next sync scheduled in {Delay}", delay);
-            await Task.Delay(delay, stoppingToken);
 
-            if (stoppingToken.IsCancellationRequested)
-                break;
+            await _timeProvider.Delay(delay, stoppingToken);
 
-            _logger.LogInformation("Starting weekly sync at {Time}", DateTime.UtcNow);
+            _logger.LogInformation("Starting sync at {Time}", _timeProvider.GetUtcNow());
             try
             {
                 using var scope = _scopeFactory.CreateScope();
                 var sync = scope.ServiceProvider.GetRequiredService<ISynchronizeCalendarEventsToTasks>();
+                var start = nextOccurrence.UtcDateTime.Date;
                 await sync.RunSynchronizationAsync(
-                    new DateTimeInterval(DateTime.Today, DateTime.Today.AddDays(7)),
+                    new DateTimeInterval(start, start.AddDays(7)),
                     stoppingToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred during the weekly sync");
+                _logger.LogError(ex, "An error occurred during sync");
             }
         }
     }
 
-    private static TimeSpan GetDelayUntilNextMonday0200Utc()
+    internal DateTimeOffset GetNextOccurrence()
     {
-        var now = DateTime.UtcNow;
-        var daysUntilMonday = ((int)DayOfWeek.Monday - (int)now.DayOfWeek + 7) % 7;
-        if (daysUntilMonday == 0 && now.TimeOfDay >= TimeSpan.FromHours(2))
-            daysUntilMonday = 7;
-        var nextRun = now.Date.AddDays(daysUntilMonday).AddHours(2);
-        return nextRun - now;
+        var cron = CronExpression.Parse(_scheduleOptions.Value.CronExpression);
+        return cron.GetNextOccurrence(_timeProvider.GetUtcNow(), TimeZoneInfo.Utc)
+            ?? throw new InvalidOperationException("Cron expression has no future occurrences.");
     }
 }

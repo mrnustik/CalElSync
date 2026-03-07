@@ -16,7 +16,12 @@ builder.Services.AddOptions<JsonCalendarMappingOptions>()
     .Bind(builder.Configuration.GetSection("CalendarsFile"))
     .ValidateDataAnnotations()
     .ValidateOnStart();
+builder.Services.AddOptions<SyncScheduleOptions>()
+    .Bind(builder.Configuration.GetSection("Sync"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 builder.Services.AddiCalImportIntegration();
+builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddHostedService<WeeklySyncService>();
 
 var app = builder.Build();
