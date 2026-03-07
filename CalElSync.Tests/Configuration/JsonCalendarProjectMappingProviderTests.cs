@@ -22,10 +22,10 @@ public class JsonCalendarProjectMappingProviderTests
                   { "calendarUrl": "https://example.com/calendar.ics", "projectId": "12345" },
                   { "calendarUrl": "https://other.com/events.ics", "projectId": "67890" }
                 ]
-                """);
+                """, TestContext.Current.CancellationToken);
 
             var provider = CreateProvider(filePath);
-            var mappings = await provider.GetCalendarMappingsAsync(CancellationToken.None);
+            var mappings = await provider.GetCalendarMappingsAsync(TestContext.Current.CancellationToken);
 
             mappings.Should().HaveCount(2);
             mappings.Should().ContainSingle(m =>
@@ -47,10 +47,10 @@ public class JsonCalendarProjectMappingProviderTests
         var filePath = Path.GetTempFileName();
         try
         {
-            await File.WriteAllTextAsync(filePath, "[]");
+            await File.WriteAllTextAsync(filePath, "[]", TestContext.Current.CancellationToken);
 
             var provider = CreateProvider(filePath);
-            var mappings = await provider.GetCalendarMappingsAsync(CancellationToken.None);
+            var mappings = await provider.GetCalendarMappingsAsync(TestContext.Current.CancellationToken);
 
             mappings.Should().BeEmpty();
         }
@@ -67,7 +67,7 @@ public class JsonCalendarProjectMappingProviderTests
         var provider = CreateProvider(missingFile);
 
         await provider
-            .Invoking(p => p.GetCalendarMappingsAsync(CancellationToken.None))
+            .Invoking(p => p.GetCalendarMappingsAsync(TestContext.Current.CancellationToken))
             .Should().ThrowAsync<FileNotFoundException>();
     }
 }
