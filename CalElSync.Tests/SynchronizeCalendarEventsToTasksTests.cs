@@ -29,43 +29,53 @@ public class SynchronizeCalendarEventsToTasksTests
         {
             new TodoTask(
                 _testingInterval.Start.AddHours(0 * DayHoursInterval + 7.5),
-                "Every Day Morning Event"
+                "Every Day Morning Event",
+                TimeSpan.FromMinutes(30)
             ),
             new TodoTask(
                 _testingInterval.Start.AddHours(0 * DayHoursInterval + 22),
-                "Monday Weekly Recurring Time Event"
+                "Monday Weekly Recurring Time Event",
+                TimeSpan.FromMinutes(30)
             ),
             new TodoTask(
                 _testingInterval.Start.AddHours(1 * DayHoursInterval + 7.5),
-                "Every Day Morning Event"
+                "Every Day Morning Event",
+                TimeSpan.FromMinutes(30)
             ),
             new TodoTask(
                 _testingInterval.Start.AddHours(1 * DayHoursInterval + 8),
-                "Tuesday Morning Event"
+                "Tuesday Morning Event",
+                TimeSpan.FromMinutes(120)
             ),
             new TodoTask(
                 _testingInterval.Start.AddHours(2 * DayHoursInterval + 7.5),
-                "Every Day Morning Event"
+                "Every Day Morning Event",
+                TimeSpan.FromMinutes(30)
             ),
             new TodoTask(
                 _testingInterval.Start.AddHours(2 * DayHoursInterval + 0),
-                "Wednesday All Day Event"
+                "Wednesday All Day Event",
+                TimeSpan.FromMinutes(1440)
             ),
             new TodoTask(
                 _testingInterval.Start.AddHours(3 * DayHoursInterval + 7.5),
-                "Every Day Morning Event"
+                "Every Day Morning Event",
+                TimeSpan.FromMinutes(30)
             ),
             new TodoTask(
                 _testingInterval.Start.AddHours(4 * DayHoursInterval + 7.5),
-                "Every Day Morning Event"
+                "Every Day Morning Event",
+                TimeSpan.FromMinutes(30)
             ),
             new TodoTask(
                 _testingInterval.Start.AddHours(5 * DayHoursInterval + 7.5),
-                "Every Day Morning Event"
+                "Every Day Morning Event",
+                TimeSpan.FromMinutes(30)
             ),
             new TodoTask(
                 _testingInterval.Start.AddHours(6 * DayHoursInterval + 7.5),
-                "Every Day Morning Event"
+                "Every Day Morning Event",
+                TimeSpan.FromMinutes(30)
             ),
         };
 
@@ -106,7 +116,8 @@ public class SynchronizeCalendarEventsToTasksTests
             projectId,
             new TodoTask(
                 _testingInterval.Start.AddHours(0 * DayHoursInterval + 22),
-                "Monday Weekly Recurring Time Event"
+                "Monday Weekly Recurring Time Event",
+                TimeSpan.FromMinutes(30)
             )
         );
         var synchronizationHandler = CreateSut();

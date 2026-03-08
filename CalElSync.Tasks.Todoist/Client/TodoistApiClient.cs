@@ -26,15 +26,16 @@ public class TodoistApiClient : ITodoistApiClient
     {
         var request = new HttpRequestMessage(
             HttpMethod.Get,
-            $"/rest/v2/tasks?project_id={filter.ProjectId}"
+            $"/api/v1/tasks?project_id={filter.ProjectId}"
         );
         var response = await _httpClient.SendAsync(request, ct);
         response.EnsureSuccessStatusCode();
         var stringResponse = await response.Content.ReadAsStringAsync(ct);
-        return JsonSerializer.Deserialize<TodoistTaskResponse[]>(
+        var wrapper = JsonSerializer.Deserialize<TodoistPagedResponse<TodoistTaskResponse>>(
             stringResponse,
             _serializationOptions
         )!;
+        return wrapper.Results;
     }
 
     public async Task CreateTaskAsync(
@@ -42,7 +43,7 @@ public class TodoistApiClient : ITodoistApiClient
         CancellationToken ct
     )
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, $"/rest/v2/tasks");
+        var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/tasks");
         request.Content = JsonContent.Create(creationRequest, options: _serializationOptions);
         var response = await _httpClient.SendAsync(request, ct);
         response.EnsureSuccessStatusCode();
