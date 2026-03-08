@@ -70,7 +70,13 @@ public class SynchronizeCalendarEventsToTasks : ISynchronizeCalendarEventsToTask
                 )
             )
             {
-                var taskToCreate = new TodoTask(calendarEvent.StartTime, calendarEvent.Title);
+                var rawDuration = calendarEvent.EndTime - calendarEvent.StartTime;
+                var duration = rawDuration > TimeSpan.Zero ? rawDuration : (TimeSpan?)null;
+                var taskToCreate = new TodoTask(
+                    calendarEvent.StartTime,
+                    calendarEvent.Title,
+                    duration
+                );
                 await _taskRepository.CreateTaskAsync(
                     calendarProjectMapping.ProjectId,
                     taskToCreate,
