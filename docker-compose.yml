@@ -1,0 +1,10 @@
+services:
+  calelsync:
+    image: ghcr.io/mrnustik/calelsync:main
+    restart: unless-stopped
+    volumes:
+      - ./calendars.json:/app/calendars.json:ro
+    environment:
+      - Todoist__ApiKey=your-todoist-api-key
+      - CalendarsFile__FilePath=/app/calendars.json
+      - Sync__CronExpression=0 2 * * 1
