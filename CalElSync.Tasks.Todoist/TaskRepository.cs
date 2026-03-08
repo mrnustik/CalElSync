@@ -1,4 +1,5 @@
-﻿using CalElSync.Core.Tasks;
+﻿using System.Globalization;
+using CalElSync.Core.Tasks;
 using CalElSync.Tasks.Todoist.Client;
 using CalElSync.Tasks.Todoist.Client.Requests;
 
@@ -20,18 +21,26 @@ public class TaskRepository : ITaskRepository
     {
         var tasks = await _todoistApiClient.GetTasksAsync(new TasksFilter(projectId), ct);
         return tasks
-            .Where(t => t.Due?.Datetime != null)
-            .Select(t => new TodoTask(t.Due!.Datetime!.Value.ToUniversalTime(), t.Content.Trim()))
+            .Where(t => t.Due?.Date != null && t.Due.Date.Contains('T'))
+            .Select(t => new TodoTask(
+                DateTime.Parse(t.Due!.Date!, null, DateTimeStyles.RoundtripKind).ToUniversalTime(),
+                t.Content.Trim()
+            ))
             .ToList()
             .AsReadOnly();
     }
 
     public Task CreateTaskAsync(string projectId, TodoTask task, CancellationToken ct)
     {
+        int? durationMinutes = task.Duration.HasValue
+            ? (int)task.Duration.Value.TotalMinutes
+            : null;
         var request = new CreateTodoistTaskRequest(
             task.Title,
             projectId,
-            task.DateTime.ToUniversalTime()
+            task.DateTime.ToUniversalTime(),
+            durationMinutes,
+            durationMinutes.HasValue ? "minute" : null
         );
         return _todoistApiClient.CreateTaskAsync(request, ct);
     }
