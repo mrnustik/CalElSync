@@ -11,8 +11,8 @@ public class EventsImportServiceTests
     private const int DayHoursInterval = 24;
 
     private readonly DateTimeInterval _testingInterval = new DateTimeInterval(
-        DateTime.Parse("2024-01-29").ToUniversalTime(),
-        DateTime.Parse("2024-02-5").ToUniversalTime()
+        new DateTime(2024, 1, 29, 0, 0, 0, DateTimeKind.Utc),
+        new DateTime(2024, 2, 5, 0, 0, 0, DateTimeKind.Utc)
     );
 
     [Fact]
@@ -35,8 +35,8 @@ public class EventsImportServiceTests
             .ContainEquivalentOf(
                 new Event(
                     "Monday Weekly Recurring Time Event",
-                    _testingInterval.Start.AddHours(22),
-                    _testingInterval.Start.AddHours(22.5)
+                    _testingInterval.Start.AddHours(21),
+                    _testingInterval.Start.AddHours(21.5)
                 )
             );
     }
@@ -61,8 +61,8 @@ public class EventsImportServiceTests
             .ContainEquivalentOf(
                 new Event(
                     "Tuesday Morning Event",
-                    _testingInterval.Start.AddHours(DayHoursInterval + 8),
-                    _testingInterval.Start.AddHours(DayHoursInterval + 10)
+                    _testingInterval.Start.AddHours(DayHoursInterval + 7),
+                    _testingInterval.Start.AddHours(DayHoursInterval + 9)
                 )
             );
     }
@@ -115,8 +115,8 @@ public class EventsImportServiceTests
                 .ContainEquivalentOf(
                     new Event(
                         "Every Day Morning Event",
-                        _testingInterval.Start.AddHours(day * DayHoursInterval + 7.5),
-                        _testingInterval.Start.AddHours(day * DayHoursInterval + 8)
+                        _testingInterval.Start.AddHours(day * DayHoursInterval + 6.5),
+                        _testingInterval.Start.AddHours(day * DayHoursInterval + 7)
                     )
                 );
         }

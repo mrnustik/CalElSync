@@ -11,8 +11,11 @@ public static class OccurenceEventsMapper
         var calendarEvent = (CalendarEvent)occurrence.Source;
         return new Event(
             calendarEvent.Summary.Trim(),
-            occurrence.Period.StartTime.AsUtc,
-            occurrence.Period.EndTime.AsUtc
+            ToUtc(occurrence.Period.StartTime),
+            ToUtc(occurrence.Period.EndTime)
         );
     }
+
+    private static DateTime ToUtc(IDateTime dt) =>
+        dt.HasTime ? dt.AsUtc : DateTime.SpecifyKind(dt.Value, DateTimeKind.Utc);
 }
