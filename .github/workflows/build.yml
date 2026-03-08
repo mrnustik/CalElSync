@@ -1,15 +1,8 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
 name: .NET
 
 on:
   push:
     branches: [ "main" ]
-
-env:
-  AZURE_FUNCTIONAPP_NAME: 'cal-el-sync-function'
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
 
 jobs:
   build:
@@ -26,29 +19,3 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Publish
-      run: dotnet publish CalElSync.Function -c Release -o ${{env.DOTNET_ROOT}}/function
-    - name: Upload artifact for deployment job
-      uses: actions/upload-artifact@v4
-      with:
-        name: function-app
-        path: ${{env.DOTNET_ROOT}}/function
-  
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'production'
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4.1.3
-        with:
-          name: function-app
-      - name: Deploy Azure Function Action
-        uses: Azure/functions-action@v1
-        id: deploy-to-function
-        with:
-          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-    
