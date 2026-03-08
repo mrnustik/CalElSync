@@ -24,18 +24,25 @@ public class TodoistApiClient : ITodoistApiClient
         CancellationToken ct
     )
     {
-        var request = new HttpRequestMessage(
-            HttpMethod.Get,
-            $"/api/v1/tasks?project_id={filter.ProjectId}"
-        );
-        var response = await _httpClient.SendAsync(request, ct);
-        response.EnsureSuccessStatusCode();
-        var stringResponse = await response.Content.ReadAsStringAsync(ct);
-        var wrapper = JsonSerializer.Deserialize<TodoistPagedResponse<TodoistTaskResponse>>(
-            stringResponse,
-            _serializationOptions
-        )!;
-        return wrapper.Results;
+        var allTasks = new List<TodoistTaskResponse>();
+        string? cursor = null;
+        do
+        {
+            var url = $"/api/v1/tasks?project_id={filter.ProjectId}";
+            if (cursor != null)
+                url += $"&cursor={cursor}";
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            var response = await _httpClient.SendAsync(request, ct);
+            response.EnsureSuccessStatusCode();
+            var stringResponse = await response.Content.ReadAsStringAsync(ct);
+            var wrapper = JsonSerializer.Deserialize<TodoistPagedResponse<TodoistTaskResponse>>(
+                stringResponse,
+                _serializationOptions
+            )!;
+            allTasks.AddRange(wrapper.Results);
+            cursor = wrapper.NextCursor;
+        } while (cursor != null);
+        return allTasks.AsReadOnly();
     }
 
     public async Task CreateTaskAsync(
